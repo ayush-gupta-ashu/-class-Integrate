@@ -1,0 +1,67 @@
+from matplotlib import pyplot as plt
+import numpy as np
+
+class Integrate(object):
+# Here f is a function to be Integrated, b is final and a is initial point of limit of Definate Integral.
+
+    def trapezoid(self, a, b, f, n=100):
+        
+        h = float(b - a) / n
+        
+        p=np.arange(a-1,b+1,h)
+        q=[f(i) for i in  p]
+        plt.axis([a-1,b+1,min(q)-2,max(q)+2])
+        plt.plot(p,q,'m')
+        
+        r=np.arange(a,b,h)
+        s=[f(i) for i in  r]
+        plt.plot(r,s,'r')
+                    
+        x=np.arange(a,b,h)
+        x=np.append(x,b)
+        y=[f(i) for i in x]
+	plt.fill_between(x,y,facecolor='#FFFF99')
+        
+        s = 0.0
+        s += f(a)/2.0
+        
+        for i in range(1, n):
+            s += f(a + i*h)
+        
+        for i in x:
+	   plt.plot([i,i],[f(i),0],'r')
+        
+        plt.axhline(y=0)
+	plt.axvline(x=0)
+        
+        s += f(b)/2.0
+        plt.show()
+        return s * h
+    
+        
+    def simpson(self, a, b, f, n=100):
+        h = float(b - a) / n
+        integral = 0.0
+
+        x = float(a)
+        for i in range(0, n / 2):
+            integral += f(x) + (2.0 * f(x + h))
+            x += 2 * h
+    
+        integral = (2.0 * integral) - f(a) + f(b)
+        integral = h * integral / 3.0
+        return integral
+        
+        
+    def solve(self,method, a, b, f, n=100):
+        if method=='trapezoid':
+            return self.trapezoid(a, b, f, n)
+        elif method== 'simpson':
+            return self.simpson(a, b, f, n)
+            
+            
+def Test():
+    i=Integrate()
+    f=lambda x:x**2+2
+    print(i.solve('trapezoid',-2,2, f))
+    print(i.solve('simpson',-2,2, f))
